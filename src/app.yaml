@@ -1,8 +1,27 @@
 application: ncl-ost-blog
 version: 1
-runtime: python
+runtime: python27
 api_version: 1
+threadsafe: true
 
 handlers:
+- url: /_ah/login_required
+  script: do_openid_login.app
+- url: /tag/(.*)
+  script: mainpage.application
+- url: /user/(.*)
+  script: mainpage.application
+- url: /post/(.*)
+  script: mainpage.application
+- url: /css
+  static_dir: css
+- url: /img
+  static_dir: img
 - url: /.*
-  script: helloworld.py
+  script: mainpage.application
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest

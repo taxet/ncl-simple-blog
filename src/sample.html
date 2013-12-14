@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple Blog</title>
+		<meta name="description" content="A simle blog" />
+		
+		<link rel="shortcut icon" href="img/favicon.ico"/>
+		<link rel="apple-touch-icon-precomposed" href="img/ico_app.png"/>
+	<!-- css -->
+	<link  rel="stylesheet" type="text/css" href="css/overall.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Simple Blog</h1>
+			</div>
+			<div id="main">
+				<div id="content" class="column">
+					<div id="posts">
+						<div class="post">
+							<h2 class="posttitle"><a href="#">Title1</a></h2>
+							<p class="postauthor">author:
+							author1
+							author2
+							author3</p>
+							<p class="postdate">post on xx/xx/xxxx, last edited on xx/xx/xxxx</p>
+							<div class="tags"><a href="#">tag1</a> <a href="#">tag2</a></div>
+							<div class="postcontent">Post1 content here.</div>
+							<a href="#">permalink</a>
+							<div class="comments"><b>m</b> views <a href="comments1"><b>n</b> comments</a>  <a href="up" class="thumbup">up</a>(x)/<a href="down" class="thumbdown">down</a>(y)</div>
+							<div class="editbutton"><button>edit</button></div>
+							<div class="share">share</div>
+						</div>
+						<div class="post even">
+							<h2 class="posttitle"><a href="###">Title2</a></h2><p class="postauthor">author1</p>
+							<p class="postdate">post on xx/xx/xxxx</p>
+							<div class="tags">
+								<a href="#">tag1</a> 
+								<a href="#">tag2</a>
+							</div>
+							<div class="postcontent">Post2 content here.</div>
+							<a href="#" class="permalink">permalink</a>
+							<div class="comments">
+								<b>m</b> views 
+								<a href="comments1"><b>n</b> comments</a>  
+								<a href="up" class="thumbup">up</a>(x)/<a href="down" class="thumbdown">down</a>(y)
+							</div>
+							<div class="editbutton"><button>edit</button></div>
+							<div class="share">share</div>
+						</div>
+					</div>
+					<div id="pages"><a href="#">1</a></div>
+					<div id="newpost">
+						<h2>Post new blog</h2>
+						<form id="newpostform" action="" method=POST>
+							<h3>title:</h3>
+							<input id="newposttitle" class="posttext" type="text" name="post_title">
+							<h3>content:</h3>
+							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
+							<h3>tags:</h3>
+							<input id="newposttags" class="posttext" type="text" name="post_tags">
+							<br/><div id="submitblog"><input type="submit" value="post"></div>
+						</form>
+					</div>
+				</div>
+				<div id="right" class="column">
+					<div id="login"><button>login</button></div>
+					<div id="userdata">
+						<!-- div id="useravatar"><img src="img/ico_app.png"/></div-->
+						<div id="username">hello! user</div>
+					</div>
+					<div id="alltags">
+						<h3>tags:</h3>
+						<div><a href="#">tag1</a> <a href="#">tag2</a></div>
+					</div>
+					<div id="rss"><a href="rss"><img id="rssicon" src="img/rss.png"/></a></div>
+				</div>
+			</div>
+			<div id="footer">
+				<p>Design by <a href="mailto:nichaolun0305@gmail.com">Chaolun Ni</a>.</p>
+			</div>
+		</div>
+	</body>
+</html>

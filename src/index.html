@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+	<head>
+		<title>Simple Blog</title>
+		<meta name="description" content="A simle blog" />
+	<!-- css -->
+	<link  rel="stylesheet" type="text/css" href="css/overall.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Simple Blog</h1>
+			</div>
+			<div id="main">
+				<div id="content" class="column">
+					<div id="posts">
+					{% for i in range(0,posts_no) %}
+						{% if i%2==0 %}
+						<div class="post even">
+						{% else %}
+						<div class="post">
+						{% endif %}
+							<h2 class="posttitle"><a href="###">{{ posts[i].title }}</a></h2>
+							<p class="postauthor">author(s): 
+							{% for author in posts[i].authors %}
+							{{ author }}
+							{% endfor %}
+							</p>
+							<p class="postdate">created on {{ posts[i].createdDate }}
+							{% if posts[i].lastEditDate %}
+							last edited on {{ posts[i].laseEditDate }}
+							{% endif %}
+							</p>
+							<div class="tags">
+								{% for tag in posts[i].tags %}
+								<a href="#">{{tag}}</a> 
+								{% endfor %}
+							</div>
+							<div class="postcontent">{{posts[i].cap500()}}</div>
+							<a href="#" class="permalink">read all</a>
+							<div class="comments"><b>{{posts[i].views}}</b> views <!-- a href="comments1"><b>n</b> comments</a-->  
+							<a href="up" class="thumbup">up</a>({{posts[i].thumbUp}})/<a href="down" class="thumbdown">down</a>{{posts[i].thumbUp}}</div>
+							{% if user and user.email() in posts[i].authors %}
+							<div class="editbutton"><button>edit</button></div>
+							{% endif %}
+							<div class="share">share</div>
+						</div>
+						{% endfor %}
+					</div>
+					<div id="pages"><a href="#">1</a></div>
+					{% if user %}
+					<div id="newpost">
+						<h2>Post new blog</h2>
+						<form id="newpostform" action="/newpost" method=POST>
+							<h3>title:</h3>
+							<input id="newposttitle" class="posttext" type="text" name="post_title">
+							<h3>content:</h3>
+							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
+							<h3>tags:</h3>
+							<input id="newposttags" class="posttext" type="text" name="post_tags">
+							<br/><div id="submitblog"><input type="submit" value="post"></div>
+						</form>
+					</div>
+					{% else %}
+					{% endif %}
+				</div>
+				<div id="right" class="column">
+					<div id="login"><a href="{{log_url|safe}}">{{log_text}}</a></div>
+					<div id="userdata">
+						<!-- div id="useravatar"><img src="img/ico_app.png"/></div-->
+						{% if user %}
+							<div id="username">hello! {{user.nickname()}}</div>
+						{% else %}
+							<div id="username">hello! Please login.</div>
+						{% endif %}
+					</div>
+					<div id="alltags">
+						<h3>tags:</h3>
+						<div><a href="#">tag1</a> <a href="#">tag2</a></div>
+					</div>
+					<div id="rss"><a href="rss"><img id="rssicon" src="img/rss.png"/></a></div>
+				</div>
+			</div>
+			<div id="footer">
+				<p>Design by <a href="mailto:nichaolun0305@gmail.com">Chaolun Ni</a>.</p>
+			</div>
+		</div>
+	</body>
+</html>
+{% endautoescape %}
