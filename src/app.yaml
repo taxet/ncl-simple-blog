@@ -7,12 +7,6 @@ threadsafe: true
 handlers:
 - url: /_ah/login_required
   script: do_openid_login.app
-- url: /tag/(.*)
-  script: mainpage.application
-- url: /user/(.*)
-  script: mainpage.application
-- url: /post/(.*)
-  script: mainpage.application
 - url: /css
   static_dir: css
 - url: /img

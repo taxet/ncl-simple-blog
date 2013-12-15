@@ -22,6 +22,9 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, 
 	position: relative;
 	padding:20px 5px 20px 5px;
 }
+#hearder a:link, #header a:visited{
+	color: #000;
+}
 
 #main{
 	padding:12px 0px 12px 0px;
@@ -71,6 +74,11 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, 
 	font-size:12px;
 	text-align:right;
 	margin: -5px 5px -5px;
+}
+#content .postauthor a:link, #content .postauthor a:visited{
+	color:#c72;
+	font-size:12px;
+	text-align:right;
 }
 #content .postdate{
 	padding:0px 0px 0px 10px;
@@ -149,4 +157,24 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, 
 #rssicon{
 	width:200px;
 	height:auto;
+}
+
+#comments{
+	margin-left:10px;
+}
+#comments .comment{
+	margin: 5px 5px 5px 10px;
+}
+#comments .commentauthor{
+	color:#c72;
+}
+#comments .commentcontent{
+	margin-left:10px;
+}
+
+#warningtitle{
+	color:#f00;
+}
+#warning{
+	color:#f55;
 }

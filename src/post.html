@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+	<head>
+		<title>Simple Blog</title>
+		<meta name="description" content="A simle blog" />
+	<!-- css -->
+	<link  rel="stylesheet" type="text/css" href="/css/overall.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1><a href="/">Simple Blog</a></h1>
+			</div>
+			<div id="main">
+				<div id="content" class="column">
+					<div id="posts">
+						<h2 class="posttitle"><a href="{{post.getUrl(wanted_user.blogname)}}">{{post.title}}</a></h2>
+						<p class="postauthor">author:
+						{% for author in post.get_authors() %}
+							<a href="{{author.get_blog_url()}}">{{ author.nickname }}</a>
+						{% endfor %}
+						</p>
+						<p class="postdate">created on {{ post.createdDate }}
+						{% if post.lastEditDate %}
+						last edited on {{ post.laseEditDate }}
+						{% endif %}
+						</p>
+						<div class="tags">
+							{% for tag in post.get_tags() %}
+							<a href="{{tag.get_url()}}">{{tag.name}}</a> 
+							{% endfor %}
+						</div>
+						<div class="postcontent">{{post.parse_content()}}</div>
+						<div class="comments"><b>{{post.views}}</b> views <a href="{{post.get_up_url()}}" class="thumbup">up</a>({{post.thumbUp}})/<a href="{{post.get_down_url()}}" class="thumbdown">down</a>({{post.thumbDown}})</div>
+						{% if user and user.email() in post.authors %}
+						<div class="editbutton">
+							<form action="/edit" method=POST>
+								<input type="hidden" name="post_id" value="{{post.post_id}}">
+								<input type="submit" value="edit">
+							</form>
+						</div>
+						{% endif %}
+						<div class="share">share</div>
+					</div>
+					{% if user %}
+					<div id="newpost">
+						<h2>Comment</h2>
+						<form id="newpostform" action="/" method=POST>
+							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
+							<br/><div id="submitblog"><input type="submit" value="post"></div>
+						</form>
+					</div>
+					{% endif %}
+				</div>
+				<div id="right" class="column">
+					<div id="login"><a href="{{log_url|safe}}">{{log_text}}</a></div>
+					<div id="userdata">
+						<!-- div id="useravatar"><img src="img/ico_app.png"/></div-->
+						{% if user %}
+							<div id="username">hello! {{user.nickname()}}</div>
+							<div id="myblock"><a href="{{userdb.get_blog_url()}}">My Blog</a></div>
+						{% else %}
+							<div id="username">hello! Please login.</div>
+						{% endif %}
+					</div>
+					<div id="alltags">
+						<h3>tags:</h3>
+						<div>
+						{% if wanted_user %}
+						{% for tag in tags %}
+						<a href="/blog/{{wanted_user.blogname}}/tag/{{tag.name}}">{{tag.name}}</a> 
+						{% endfor %}
+						{% else %}
+						{% for tag in tags %}
+						<a href="/tag/{{tag.name}}">{{tag.name}}</a> 
+						{% endfor %}
+						{% endif %}
+						</div>
+					</div>
+					<!--  div id="rss"><a href="rss"><img id="rssicon" src="/img/rss.png"/></a></div -->
+				</div>
+			</div>
+			<div id="footer">
+				<p>Design by <a href="mailto:nichaolun0305@gmail.com">Chaolun Ni</a>.</p>
+			</div>
+		</div>
+	</body>
+</html>
+{% endautoescape %}

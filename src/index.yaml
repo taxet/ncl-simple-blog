@@ -1,5 +1,6 @@
 indexes:
 - kind: Post
   properties:
-  - name: date
+  - name: post_id
+  - name: createdDate
     direction: desc

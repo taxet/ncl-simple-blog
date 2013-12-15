@@ -7,6 +7,10 @@ class User(ndb.Model):
     '''
     email=ndb.StringProperty(required=True)#unique
     nickname=ndb.StringProperty()
-    posts=ndb.KeyProperty(repeated=True)
-
+    posts=ndb.StringProperty(repeated=True)
+    subscribe=ndb.KeyProperty(repeated=True)
+    blogname=ndb.StringProperty()
+    
+    def get_blog_url(self):
+        return "/blog/"+self.blogname
         

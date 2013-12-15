@@ -21,7 +21,7 @@
 						{% else %}
 						<div class="post">
 						{% endif %}
-							<h2 class="posttitle"><a href="{{posts[i].getDefaultUrl()}}">{{ posts[i].title }}</a></h2>
+							<h2 class="posttitle"><a href="{{posts[i].getUrl(wanted_user.blogname)}}">{{ posts[i].title }}</a></h2>
 							<p class="postauthor">author(s): 
 							{% for author in posts[i].get_authors() %}
 							<a href="{{author.get_blog_url()}}">{{ author.nickname }}</a>
@@ -38,15 +38,15 @@
 								{% endfor %}
 							</div>
 							<div class="postcontent">{{posts[i].cap500()}}</div>
-							<a href="{{posts[i].getDefaultUrl()}}" class="permalink">permalink</a>
+							<a href="{{posts[i].getUrl(wanted_user.blogname)}}" class="permalink">permalink</a>
 							<div class="comments"><b>{{posts[i].views}}</b> views <!-- a href="comments1"><b>n</b> comments</a-->  
 							up({{posts[i].thumbUp}})/down({{posts[i].thumbUp}})</div>
 							{% if user and user.email() in posts[i].authors %}
 							<div class="editbutton">
-								<form action="/edit" method=POST>
-									<input type="hidden" name="post_id" value="{{posts[i].post_id}}">
-									<input type="submit" value="edit">
-								</form>
+							<form action="/edit" method=POST>
+								<input type="hidden" name="post_id" value="{{posts[i].post_id}}">
+								<input type="submit" value="edit">
+							</form>
 							</div>
 							{% endif %}
 							<div class="share">share</div>
@@ -85,9 +85,15 @@
 					<div id="alltags">
 						<h3>tags:</h3>
 						<div>
+						{% if wanted_user %}
 						{% for tag in tags %}
-						<a href="{{tag.get_url()}}">{{tag.name}}</a> 
+						<a href="/blog/{{wanted_user.blogname}}/tag/{{tag.name}}">{{tag.name}}</a> 
 						{% endfor %}
+						{% else %}
+						{% for tag in tags %}
+						<a href="/tag/{{tag.name}}">{{tag.name}}</a> 
+						{% endfor %}
+						{% endif %}
 						</div>
 					</div>
 					<!--  div id="rss"><a href="rss"><img id="rssicon" src="/img/rss.png"/></a></div -->
