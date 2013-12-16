@@ -21,10 +21,10 @@
 						{% else %}
 						<div class="post">
 						{% endif %}
-							<h2 class="posttitle"><a href="{{posts[i].getDefaultUrl()}}">{{ posts[i].title }}</a></h2>
+							<h2 class="posttitle"><a href="{{posts[i].get_url()}}">{{ posts[i].title }}</a></h2>
 							<p class="postauthor">author(s): 
 							{% for author in posts[i].get_authors() %}
-							<a href="{{author.get_blog_url()}}">{{ author.nickname }}</a>
+							{{ author.nickname }}
 							{% endfor %}
 							</p>
 							<p class="postdate">created on {{ posts[i].createdDate }}
@@ -38,7 +38,7 @@
 								{% endfor %}
 							</div>
 							<div class="postcontent">{{posts[i].cap500()}}</div>
-							<a href="{{posts[i].getDefaultUrl()}}" class="permalink">permalink</a>
+							<a href="{{posts[i].get_url()}}" class="permalink">permalink</a>
 							<div class="comments"><b>{{posts[i].views}}</b> views <!-- a href="comments1"><b>n</b> comments</a-->  
 							up({{posts[i].thumbUp}})/down({{posts[i].thumbUp}})</div>
 							{% if user and user.email() in posts[i].authors %}
@@ -56,17 +56,6 @@
 					<div id="pages">{{page.get_html()|safe}}</div>
 					{% if user %}
 					<div id="newpost">
-						<h2>New Post</h2>
-						<form id="newpostform" action="/newpost" method=POST>
-							<h3>title:</h3>
-							<input id="newposttitle" class="posttext" type="text" name="post_title">
-							<h3>content:</h3>
-							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
-							<h3>tags:</h3>
-							<input id="newposttags" class="posttext" type="text" name="post_tags">
-							<input type="hidden" name="post_author" value="{{user.email()}}">
-							<br/><div id="submitblog"><input type="submit" value="post"></div>
-						</form>
 						<form id="uploadImage" action="/uploadimage" method=POST enctype="multipart/form-data">
 						 	<input type="hidden" name="user_email" value="{{user.email()}}">
 							upload image: <input type="file" name="img" accept="image/*"> <div id="uploadimage" class="rightbutton"><input type="submit" value="upload"></div>
@@ -81,8 +70,16 @@
 						<!-- div id="useravatar"><img src="img/ico_app.png"/></div-->
 						{% if user %}
 							<div id="username">hello! {{user.nickname()}}</div>
-							<div id="myblock"><a href="{{userdb.get_blog_url()}}">My Blog</a></div>
-							<div id="mypic"><a href="{{userdb.get_blog_url()}}/pic">My pictures</a></div>
+							<div id="myblock">
+							<h3>My Blogs:</h3>
+							{% for blog in userdb.get_blogs() %}
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							{% endfor %}
+							</div>
+							<br/>
+							<div id="mypic"><a href="/user/{{userdb.email}}/pic">My pictures</a></div>
+							<br/>
+							<div id="newblog"><a href="/newblog">create a new blog</a></div>
 						{% else %}
 							<div id="username">hello! Please login.</div>
 						{% endif %}

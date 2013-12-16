@@ -2,7 +2,7 @@
 {% autoescape true %}
 <html>
 	<head>
-		<title>Simple Blog</title>
+		<title>Images</title>
 		<meta name="description" content="A simle blog" />
 	<!-- css -->
 	<link  rel="stylesheet" type="text/css" href="/css/overall.css" />
@@ -10,7 +10,7 @@
 	<body>
 		<div id="wrapper">
 			<div id="header">
-				<h1><a href="/">Simple Blog</a></h1>
+				<h1><a href="/">Home</a></h1>
 			</div>
 			<div id="main">
 				<div id="content" class="column">
@@ -34,27 +34,20 @@
 						<!-- div id="useravatar"><img src="img/ico_app.png"/></div-->
 						{% if user %}
 							<div id="username">hello! {{user.nickname()}}</div>
-							<div id="myblock"><a href="{{userdb.get_blog_url()}}">My Blog</a></div>
-							<div id="mypic"><a href="{{userdb.get_blog_url()}}/pic">My pictures</a></div>
+							<div id="myblock">
+							<h3>My Blogs:</h3>
+							{% for blog in userdb.get_blogs() %}
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							{% endfor %}
+							</div>
+							<br/>
+							<div id="mypic"><a href="/user/{{userdb.email}}/pic">My pictures</a></div>
 						{% else %}
 							<div id="username">hello! Please login.</div>
 						{% endif %}
 					</div>
-					<div id="alltags">
-						<h3>tags:</h3>
-						<div>
-						{% if wanted_user %}
-						{% for tag in tags %}
-						<a href="/blog/{{wanted_user.blogname}}/tag/{{tag.name}}">{{tag.name}}</a> 
-						{% endfor %}
-						{% else %}
-						{% for tag in tags %}
-						<a href="/tag/{{tag.name}}">{{tag.name}}</a> 
-						{% endfor %}
-						{% endif %}
-						</div>
-					</div>
 					<!--  div id="rss"><a href="rss"><img id="rssicon" src="/img/rss.png"/></a></div -->
+					<div id="homelink"><a href="/">home</a></div>
 				</div>
 			</div>
 			<div id="footer">

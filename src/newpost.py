@@ -1,13 +1,13 @@
 import urllib
 from datetime import datetime
 from google.appengine.api import users
-from google.appengine.ext import ndb
 
 import webapp2
 
 from shared.Post import Post
 from shared.Tag import Tag
 from shared.User import User
+from shared.Blog import Blog
 import jinja2
 import os
 
@@ -21,6 +21,7 @@ class NewPost(webapp2.RequestHandler):
             author= user.email()
             content = self.request.get('post_content')
             tags=self.request.get('post_tags').split(" ")
+            blogname = self.request.get('blog_name')    
             post = Post()
             post.title = title
             post.authors.append(author)
@@ -29,6 +30,7 @@ class NewPost(webapp2.RequestHandler):
             post.views = 0
             post.thumbUp = 0
             post.thumbDown = 0
+            post.blog=blogname
             post_key=post.put()
             post.post_id=post_key.urlsafe()
             post.put()
@@ -43,11 +45,11 @@ class NewPost(webapp2.RequestHandler):
                     new_tag=Tag()
                     new_tag.name = tag
                     new_tag.append(post.post_id)
-                    new_tag.put()    
-            #put user
-            userdb = User.query(User.email==user.email()).fetch()[0]
-            userdb.posts.append(post.post_id)
-            userdb.put()
+                    new_tag.put()
+            #put blog
+            blogdb = Blog.query(Blog.name == blogname).fetch()[0]
+            blogdb.posts.append(post.post_id)
+            blogdb.put()
             self.redirect('/')
         else:
             para={'title':"WARNING","warning":"0"}
@@ -57,29 +59,27 @@ class NewPost(webapp2.RequestHandler):
 class NewBlog(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
+        author = self.request.get('post_author')
         blogname=self.request.get("blog_name")
-        if user:
+        if user and user.email()==author:
             userdb = User.query(User.email==user.email()).fetch()[0]
-            if userdb.blogname:
-                para={'title':"WARNING","warning":"1"}
-                self.redirect('/warning?'+urllib.urlencode(para))
+            #already exist
+            if Blog.query(Blog.name==blogname).fetch():
+                para={"warning":"0"}
+                self.redirect('/newblog?'+urllib.urlencode(para))
+                return
+            #illegal name
+            elif '/' in blogname:
+                para={"warning":"1"}
+                self.redirect('/newblog?'+urllib.urlencode(para))
                 return
             else:
-                #not taken
-                if User.query(User.blogname==blogname).fetch():
-                    para={"warning":"0"}
-                    self.redirect('/newblog?'+urllib.urlencode(para))
-                    return
-                #illegal name
-                elif '/' in blogname:
-                    para={"warning":"1"}
-                    self.redirect('/newblog?'+urllib.urlencode(para))
-                    return
-                else:
-                    userdb.blogname=blogname
-                    userdb.put()
-                    para={'title':"Congratulations","warning":"2"}
-                    self.redirect('/warning?'+urllib.urlencode(para))
+                blog=Blog(name=blogname)
+                blog.put()
+                userdb.blogs.append(blogname)
+                userdb.put()
+                para={'title':"Congratulations","warning":"2"}
+                self.redirect('/warning?'+urllib.urlencode(para))
                 
         else:
             para={'title':"WARNING","warning":"0"}
@@ -150,8 +150,8 @@ class EditSubmit(webapp2.RequestHandler):
                 for tag in old_tags:
                     tag_entity=Tag.query(Tag.name==tag).fetch()[0]
                     if tag_entity.posts_num==0:
-                        tag_entity.delete()
-                self.redirect(post.getDefaultUrl())
+                        tag_entity.key.delete()
+                self.redirect(post.get_url())
             else:
                 para={'title':"WARNING","warning":"5"}
                 self.redirect('/warning?'+urllib.urlencode(para))

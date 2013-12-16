@@ -1,4 +1,5 @@
 import urllib
+import re
 
 from google.appengine.ext import ndb
 
@@ -16,6 +17,7 @@ class Post(ndb.Model):
     tags=ndb.StringProperty(repeated=True)
     content=ndb.StringProperty(indexed=False)
     authors=ndb.StringProperty(repeated=True)
+    blog=ndb.StringProperty()
     views=ndb.IntegerProperty()
     #comment=ndb.
     thumbUp=ndb.IntegerProperty()
@@ -23,23 +25,21 @@ class Post(ndb.Model):
     
     def cap500(self):
         result = self.content[0:499]
-        result += "..."
+        if len(self.content)>500:
+            result += "..."
         return result
     
-    def getUrl(self,blogname):
-        href="/blog/"+blogname+"/post/"
-        urlsafe=self.key.urlsafe()
-        href += urlsafe
-        return href
-    def getDefaultUrl(self):
-        blogname=User.query(User.email==self.authors[0]).fetch()[0].blogname
-        href="/blog/"+blogname+"/post/"
+    def get_url(self):
+        href="/blog/"+self.blog+"/post/"
         urlsafe=self.key.urlsafe()
         href += urlsafe
         return href
     
     def parse_content(self):
-        return self.content
+        result = re.sub(r'(http[s]?://[^,\s\n]*)', '<a href="\\1">\\1</a>', self.content)
+        result = re.sub(r'<a href="(http[s]?://[^,\s\n]*[(.jpg)(.png)(.gif)])">.*</a>', '<img src="\\1">', result)
+        result = result.replace('\n', '<br />')
+        return result
     
     def get_up_url(self):
         urlsafe=self.key.urlsafe()

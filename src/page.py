@@ -10,6 +10,7 @@ import webapp2
 from shared.User import User
 from shared.Post import Post
 from shared.Tag import Tag
+from shared.Blog import Blog
 
 class Page:
     start_page=1
@@ -73,10 +74,6 @@ class TagPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
@@ -131,10 +128,6 @@ class PostPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
@@ -146,24 +139,24 @@ class PostPage(webapp2.RequestHandler):
             post.views+=1
             post.put()
             #wanted blog
-            wanted_user=[]
-            if User.query(User.blogname==blogname).fetch():
-                wanted_user=User.query(User.blogname==blogname).fetch()[0]
+            wanted_blog=[]
+            if Blog.query(Blog.name==blogname).fetch():
+                wanted_blog=Blog.query(Blog.name==blogname).fetch()[0]
                 tags=Tag.query().order(-Tag.posts_num).fetch()
                 for tag in tags:
                     flag=False
                     for tag_post in tag.posts:
                         p=Post.query(Post.post_id==tag_post).fetch()[0]
-                        if wanted_user.email in p.authors:
+                        if p.blog == wanted_blog.name:
                             flag=True
                     if not flag:
                         tags.remove(tag)
-                if post.post_id in wanted_user.posts:
+                if post.post_id in wanted_blog.posts:
                     template_values={"post":post,
                                      "log_url":log_url,
                                      "log_text":log_text,
                                      "user":user,
-                                     "wanted_user":wanted_user,
+                                     "wanted_blog":wanted_blog,
                                      "tags":tags,
                                      "userdb":userdb}
                     template = JINJA_ENVIRONMENT.get_template('post.html')
@@ -225,22 +218,18 @@ class BlogPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
         
         #get wanted user
-        wanted_user=[]
-        if User.query(User.blogname==blogname).fetch():
-            wanted_user=User.query(User.blogname==blogname).fetch()[0]
+        wanted_blog=[]
+        if Blog.query(Blog.name==blogname).fetch():
+            wanted_blog=Blog.query(Blog.name==blogname).fetch()[0]
             #get posts
-            if wanted_user.posts:
+            if wanted_blog.posts:
                 page=Page()
-                posts_list = Post.query(Post.post_id.IN(wanted_user.posts)).order(-Post.createdDate).fetch()
+                posts_list = Post.query(Post.post_id.IN(wanted_blog.posts)).order(-Post.createdDate).fetch()
                 all_page=(len(posts_list)-1)/10+1
                 page.all_page=all_page
                 try:
@@ -260,7 +249,7 @@ class BlogPage(webapp2.RequestHandler):
                 flag=False
                 for tag_post in tag.posts:
                     p=Post.query(Post.post_id==tag_post).fetch()[0]
-                    if wanted_user.email in p.authors:
+                    if p.blog == wanted_blog.name:
                         flag=True
                 if not flag:
                     tags.remove(tag)
@@ -271,7 +260,7 @@ class BlogPage(webapp2.RequestHandler):
                              "log_text":log_text,
                              "user":user,
                              "userdb":userdb,
-                             "wanted_user":wanted_user,
+                             "wanted_blog":wanted_blog,
                              "tags":tags}
             template = JINJA_ENVIRONMENT.get_template('blog.html')
             self.response.write(template.render(template_values))
@@ -295,24 +284,20 @@ class BlogTagPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
         
         #get wanted user
-        wanted_user=[]
-        if User.query(User.blogname==blogname).fetch():
-            wanted_user=User.query(User.blogname==blogname).fetch()[0]
+        wanted_blog=[]
+        if Blog.query(Blog.name==blogname).fetch():
+            wanted_blog=Blog.query(Blog.name==blogname).fetch()[0]
             if Tag.query(Tag.name==tagname).fetch():
                 wanted_tag=Tag.query(Tag.name==tagname).fetch()[0]
                 #get posts
-                if wanted_user.posts:
+                if wanted_blog.posts:
                     page=Page()
-                    posts_list = Post.query(ndb.AND(Post.post_id.IN(wanted_user.posts),Post.post_id.IN(wanted_tag.posts))).order(-Post.createdDate).fetch()
+                    posts_list = Post.query(ndb.AND(Post.post_id.IN(wanted_blog.posts),Post.post_id.IN(wanted_tag.posts))).order(-Post.createdDate).fetch()
                     all_page=(len(posts_list)-1)/10+1
                     page.all_page=all_page
                     try:
@@ -332,7 +317,7 @@ class BlogTagPage(webapp2.RequestHandler):
                 flag=False
                 for tag_post in tag.posts:
                     p=Post.query(Post.post_id==tag_post).fetch()[0]
-                    if wanted_user.email in p.authors:
+                    if p.blog == wanted_blog.name:
                         flag=True
                 if not flag:
                     tags.remove(tag)
@@ -343,7 +328,7 @@ class BlogTagPage(webapp2.RequestHandler):
                              "log_text":log_text,
                              "user":user,
                              "userdb":userdb,
-                             "wanted_user":wanted_user,
+                             "wanted_blog":wanted_blog,
                              "tags":tags}
             template = JINJA_ENVIRONMENT.get_template('blog.html')
             self.response.write(template.render(template_values))
@@ -352,7 +337,7 @@ class BlogTagPage(webapp2.RequestHandler):
             self.redirect('/warning?'+urllib.urlencode(para))
             
 class BlogPicPage(webapp2.RequestHandler):
-    def get(self,blogname):
+    def get(self,user_email):
         #get user
         user = users.get_current_user()
         if user:
@@ -366,10 +351,6 @@ class BlogPicPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
@@ -377,23 +358,13 @@ class BlogPicPage(webapp2.RequestHandler):
         #get images
         #wanted blog
         wanted_user=[]
-        if User.query(User.blogname==blogname).fetch():
-            wanted_user=User.query(User.blogname==blogname).fetch()[0]
-            tags=Tag.query().order(-Tag.posts_num).fetch()
-            for tag in tags:
-                flag=False
-                for tag_post in tag.posts:
-                    p=Post.query(Post.post_id==tag_post).fetch()[0]
-                    if wanted_user.email in p.authors:
-                        flag=True
-                if not flag:
-                    tags.remove(tag)
+        if User.query(User.email==user_email).fetch():
+            wanted_user=User.query(User.email==user_email).fetch()[0]
             template_values={"image_no":len(wanted_user.images),
                              "log_url":log_url,
                              "log_text":log_text,
                              "user":user,
                              "wanted_user":wanted_user,
-                             "tags":tags,
                              "userdb":userdb}
             template = JINJA_ENVIRONMENT.get_template('image.html')
             self.response.write(template.render(template_values))
@@ -424,23 +395,40 @@ class WarningPage(webapp2.RequestHandler):
 
 class NewBlogPage(webapp2.RequestHandler):
     def get(self):
-        WARNING_LIST=["This blog name has alredy been used.",
-                      "Please do not contain \"/\" in blog name",
-                      ""]
-        try:
-            warning=WARNING_LIST[int(self.request.get("warning"))]
-        except (TypeError, ValueError, AttributeError):
-            warning=""
-        template_values={"warning":warning}
-        template = JINJA_ENVIRONMENT.get_template('newblog.html')
-        self.response.write(template.render(template_values))
+        #get user
+        user = users.get_current_user()
+        if user:
+            #check if in database
+            userdb_list = User.query(User.email == user.email()).fetch()
+            if userdb_list:
+                userdb=userdb_list[0]
+            else:
+                #add new entry
+                userdb=User(email=user.email(),nickname=user.nickname())
+                userdb.put()
+                
+            WARNING_LIST=["This blog name has alredy been used.",
+                          "Please do not contain \"/\" in blog name",
+                          ""]
+            try:
+                warning=WARNING_LIST[int(self.request.get("warning"))]
+            except (TypeError, ValueError, AttributeError):
+                warning=""
+            template_values={"warning":warning,
+                             "userdb":userdb}
+            template = JINJA_ENVIRONMENT.get_template('newblog.html')
+            self.response.write(template.render(template_values))
+        else:
+            para={'title':"WARNING","warning":"0"}
+            self.redirect('/warning?'+urllib.urlencode(para))
+            return
 
 
 class PicPage(webapp2.RequestHandler):
-    def get(self,blogname,pic_no):
+    def get(self,user_email,pic_no):
         wanted_user=[]
-        if User.query(User.blogname==blogname).fetch():
-            wanted_user=User.query(User.blogname==blogname).fetch()[0]
+        if User.query(User.email==user_email).fetch():
+            wanted_user=User.query(User.email==user_email).fetch()[0]
             img_no=int(pic_no)
             if img_no<len(wanted_user.images):
                 self.response.headers['Content-Type'] = 'image/png'

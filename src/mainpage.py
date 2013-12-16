@@ -87,10 +87,6 @@ class MainPage(webapp2.RequestHandler):
                 #add new entry
                 userdb=User(email=user.email(),nickname=user.nickname())
                 userdb.put()
-            if userdb.blogname:
-                pass
-            else:
-                self.redirect("/newblog")
         else:
             log_url = users.create_login_url(self.request.uri)
             log_text = "Login"
@@ -125,8 +121,8 @@ application = webapp2.WSGIApplication([('/',MainPage),
                                        (r'/tag/([^/]*)',TagPage),
                                        (r'/blog/([^/]*)',BlogPage),
                                        (r'/blog/([^/]*)/tag/([^/]*)',BlogTagPage),
-                                       (r'/blog/([^/]*)/pic',BlogPicPage),
-                                       (r'/blog/([^/]*)/pic/([0-9]*).png',PicPage),
+                                       (r'/user/([^/]*)/pic',BlogPicPage),
+                                       (r'/user/([^/]*)/pic/([0-9]*).png',PicPage),
                                        ('/uploadimage',UploadImage),
                                        ('/up',UpPost),
                                        ('/down',DownPost),

@@ -15,6 +15,7 @@
 			<div id="main">
 				<h3>Please enter your blog name:</h3>
 				<form action="/newblogpost" method=POST>
+					<input type="hidden" value="{{userdb.email}}" name="post_author">
 					<input type="text" name="blog_name"><br/>
 					<input type="submit" value="next">
 				</form>
