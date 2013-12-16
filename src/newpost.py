@@ -1,6 +1,7 @@
 import urllib
 from datetime import datetime
 from google.appengine.api import users
+from google.appengine.ext import ndb
 
 import webapp2
 
@@ -161,3 +162,26 @@ class EditSubmit(webapp2.RequestHandler):
             return
             
             
+class UploadImage(webapp2.RequestHandler):
+    def post(self):
+        user=users.get_current_user()
+        if user:
+            author=self.request.get('user_email')
+            if author == user.email():
+                img = self.request.get('img')
+                userdb = User.query(User.email==user.email()).fetch()[0]
+                userdb.images.append(img)
+                userdb.put()
+                para={'title':"Message","warning":"6"}
+                self.redirect('/warning?'+urllib.urlencode(para))
+                return    
+            else:
+                para={'title':"WARNING","warning":"5"}
+                self.redirect('/warning?'+urllib.urlencode(para))
+                return                
+        else:
+            para={'title':"WARNING","warning":"0"}
+            self.redirect('/warning?'+urllib.urlencode(para))
+            return
+
+
