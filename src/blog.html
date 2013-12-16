@@ -40,7 +40,7 @@
 							<div class="postcontent">{{posts[i].cap500()}}</div>
 							<a href="{{posts[i].get_url()}}" class="permalink">permalink</a>
 							<div class="comments"><b>{{posts[i].views}}</b> views <!-- a href="comments1"><b>n</b> comments</a-->  
-							up({{posts[i].thumbUp}})/down({{posts[i].thumbUp}})</div>
+							up({{posts[i].thumbUp}})/down({{posts[i].thumbDown}})</div>
 							{% if user and user.email() in posts[i].authors %}
 							<div class="editbutton">
 							<form action="/edit" method=POST>
@@ -62,7 +62,7 @@
 							<input id="newposttitle" class="posttext" type="text" name="post_title">
 							<h3>content:</h3>
 							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
-							<h3>tags:</h3>
+							<h3>tags:</h3>(separated with space)
 							<input id="newposttags" class="posttext" type="text" name="post_tags">
 							<input type="hidden" name="post_author" value="{{user.email()}}">
 							<input type="hidden" name="blog_name" value="{{wanted_blog.name}}">
@@ -85,7 +85,7 @@
 							<div id="myblock">
 							<h3>My Blogs:</h3>
 							{% for blog in userdb.get_blogs() %}
-							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a><br/>
 							{% endfor %}
 							</div>
 							<br/>
@@ -108,7 +108,7 @@
 						{% endif %}
 						</div>
 					</div>
-					<!--  div id="rss"><a href="rss"><img id="rssicon" src="/img/rss.png"/></a></div -->
+					<div id="rss"><a href="{{wanted_blog.get_blog_url()}}/rss"><img id="rssicon" src="/img/rss.png"/></a></div>
 					<div id="homelink"><a href="/">home</a></div>
 				</div>
 			</div>

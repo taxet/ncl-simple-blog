@@ -28,7 +28,7 @@
 						</p>
 						<div class="tags">
 							{% for tag in post.get_tags() %}
-							<a href="{{tag.get_url()}}">{{tag.name}}</a> 
+							<a href="/blog/{{wanted_blog.name}}/tag/{{tag.name}}">{{tag.name}}</a> 
 							{% endfor %}
 						</div>
 						<div class="postcontent">{{post.parse_content()|safe}}</div>
@@ -62,7 +62,7 @@
 							<div id="myblock">
 							<h3>My Blogs:</h3>
 							{% for blog in userdb.get_blogs() %}
-							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a><br/>
 							{% endfor %}
 							</div>
 							<br/>
@@ -85,7 +85,7 @@
 						{% endif %}
 						</div>
 					</div>
-					<!--  div id="rss"><a href="rss"><img id="rssicon" src="/img/rss.png"/></a></div -->
+					<div id="rss"><a href="{{wanted_blog.get_blog_url()}}/rss"><img id="rssicon" src="/img/rss.png"/></a></div>
 					<div id="homelink"><a href="/">home</a></div>
 				</div>
 			</div>

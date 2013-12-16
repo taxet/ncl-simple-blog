@@ -37,7 +37,7 @@
 							<div id="myblock">
 							<h3>My Blogs:</h3>
 							{% for blog in userdb.get_blogs() %}
-							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a><br/>
 							{% endfor %}
 							</div>
 							<br/>

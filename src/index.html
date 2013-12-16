@@ -40,7 +40,7 @@
 							<div class="postcontent">{{posts[i].cap500()}}</div>
 							<a href="{{posts[i].get_url()}}" class="permalink">permalink</a>
 							<div class="comments"><b>{{posts[i].views}}</b> views <!-- a href="comments1"><b>n</b> comments</a-->  
-							up({{posts[i].thumbUp}})/down({{posts[i].thumbUp}})</div>
+							up({{posts[i].thumbUp}})/down({{posts[i].thumbDown}})</div>
 							{% if user and user.email() in posts[i].authors %}
 							<div class="editbutton">
 								<form action="/edit" method=POST>
@@ -73,7 +73,7 @@
 							<div id="myblock">
 							<h3>My Blogs:</h3>
 							{% for blog in userdb.get_blogs() %}
-							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a>
+							<a href="{{blog.get_blog_url()}}">{{blog.name}}</a><br/>
 							{% endfor %}
 							</div>
 							<br/>

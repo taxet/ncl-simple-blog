@@ -7,10 +7,10 @@ from google.appengine.ext import ndb
 import jinja2
 import webapp2
 
-from shared.User import User
-from shared.Post import Post
-from shared.Tag import Tag
-from shared.Blog import Blog
+from shared.Data import User
+from shared.Data import Post
+from shared.Data import Tag
+from shared.Data import Blog
 
 class Page:
     start_page=1
@@ -142,15 +142,16 @@ class PostPage(webapp2.RequestHandler):
             wanted_blog=[]
             if Blog.query(Blog.name==blogname).fetch():
                 wanted_blog=Blog.query(Blog.name==blogname).fetch()[0]
-                tags=Tag.query().order(-Tag.posts_num).fetch()
-                for tag in tags:
+                tags=[]
+                all_tags=Tag.query().order(-Tag.posts_num).fetch()
+                for tag in all_tags:
                     flag=False
                     for tag_post in tag.posts:
                         p=Post.query(Post.post_id==tag_post).fetch()[0]
                         if p.blog == wanted_blog.name:
                             flag=True
-                    if not flag:
-                        tags.remove(tag)
+                    if flag:
+                        tags.append(tag)
                 if post.post_id in wanted_blog.posts:
                     template_values={"post":post,
                                      "log_url":log_url,
@@ -244,15 +245,16 @@ class BlogPage(webapp2.RequestHandler):
                 page.all_page=1
                 page.set_curr_page(1)
                 posts=[]
-            tags=Tag.query().order(-Tag.posts_num).fetch()
-            for tag in tags:
+            tags=[]
+            all_tags=Tag.query().order(-Tag.posts_num).fetch()
+            for tag in all_tags:
                 flag=False
                 for tag_post in tag.posts:
                     p=Post.query(Post.post_id==tag_post).fetch()[0]
                     if p.blog == wanted_blog.name:
                         flag=True
-                if not flag:
-                    tags.remove(tag)
+                if flag:
+                    tags.append(tag)
             template_values={"posts":posts,
                              "posts_no":len(posts),
                              "page":page,
@@ -312,15 +314,16 @@ class BlogTagPage(webapp2.RequestHandler):
                     page.all_page=1
                     page.set_curr_page(1)
                     posts=[]
-            tags=Tag.query().order(-Tag.posts_num).fetch()
-            for tag in tags:
+            tags=[]
+            all_tags=Tag.query().order(-Tag.posts_num).fetch()
+            for tag in all_tags:
                 flag=False
                 for tag_post in tag.posts:
                     p=Post.query(Post.post_id==tag_post).fetch()[0]
                     if p.blog == wanted_blog.name:
                         flag=True
                 if not flag:
-                    tags.remove(tag)
+                    tags.append(tag)
             template_values={"posts":posts,
                              "posts_no":len(posts),
                              "page":page,
@@ -439,3 +442,13 @@ class PicPage(webapp2.RequestHandler):
         else:
             para={'title':"WARNING","warning":"4"}
             self.redirect('/warning?'+urllib.urlencode(para))
+
+class RssPage(webapp2.RequestHandler):
+    def get(self,blogname):
+        if Blog.query(Blog.name==blogname).fetch():
+            blog=Blog.query(Blog.name==blogname).fetch()[0]
+        
+            template_values={"blog":blog}
+            template = JINJA_ENVIRONMENT.get_template('template.rss')
+            self.response.headers['Content-Type'] = 'application/rss+xml'
+            self.response.write(template.render(template_values))

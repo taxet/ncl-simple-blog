@@ -2,9 +2,9 @@ import os
 
 from google.appengine.api import users
 
-from shared.User import User
-from shared.Post import Post
-from shared.Tag import Tag
+from shared.Data import User
+from shared.Data import Post
+from shared.Data import Tag
 
 import jinja2
 import webapp2
@@ -24,6 +24,7 @@ from page import NewBlogPage
 from page import BlogTagPage
 from page import BlogPicPage
 from page import PicPage
+from page import RssPage
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
                                        extensions=['jinja2.ext.autoescape'],
@@ -120,6 +121,7 @@ application = webapp2.WSGIApplication([('/',MainPage),
                                        (r'/blog/([^/]*)/post/([^/]*)',PostPage),
                                        (r'/tag/([^/]*)',TagPage),
                                        (r'/blog/([^/]*)',BlogPage),
+                                       (r'/blog/([^/]*)/rss',RssPage),
                                        (r'/blog/([^/]*)/tag/([^/]*)',BlogTagPage),
                                        (r'/user/([^/]*)/pic',BlogPicPage),
                                        (r'/user/([^/]*)/pic/([0-9]*).png',PicPage),

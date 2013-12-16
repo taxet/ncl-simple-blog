@@ -3,9 +3,6 @@ import re
 
 from google.appengine.ext import ndb
 
-from Tag import Tag
-from User import User
-
 class Post(ndb.Model):
     '''
     A class that record all posts from database.
@@ -68,4 +65,59 @@ class Post(ndb.Model):
         result=""
         for tag in self.tags:
             result=result+tag+" "
+        return result[:-1]
+    
+class Blog(ndb.Model):
+    name=ndb.StringProperty(required=True)#unique
+    posts=ndb.StringProperty(repeated=True)
+    
+    def get_blog_url(self):
+        return "/blog/"+self.name
+    
+    def get_all_posts(self):
+        result=[]
+        for post in self.posts:
+            p = Post.query(Post.post_id==post).fetch()[0]
+            result.append(p)
         return result
+    
+class User(ndb.Model):
+    '''
+    User data
+    @param username: the username 
+    '''
+    email=ndb.StringProperty(required=True)#unique
+    nickname=ndb.StringProperty()
+    subscribe=ndb.KeyProperty(repeated=True)
+    blogs=ndb.StringProperty(repeated=True)
+    images=ndb.BlobProperty(repeated=True)
+    
+    def get_image_url(self,img_no):
+        return "/user/"+self.email+"/pic/"+str(img_no)+".png"
+    
+    def get_blogs(self):
+        blogs = []
+        for blog in self.blogs:
+            blogdb = Blog.query(Blog.name==blog).fetch()[0]
+            blogs.append(blogdb)
+        return blogs
+    
+class Tag(ndb.Model):
+    name=ndb.StringProperty(required=True)#unique
+    posts=ndb.StringProperty(repeated=True)
+    posts_num=ndb.IntegerProperty()
+    
+    def get_url(self):
+        return "/tag/"+self.name
+    
+    def append(self, post_id):
+        if post_id in self.posts:
+            pass
+        else:
+            self.posts.append(post_id)
+            self.posts_num=len(self.posts)
+        
+    def remove(self,post_id):
+        if post_id in self.posts:
+            self.posts.remove(post_id)
+            self.posts_num=len(self.posts)

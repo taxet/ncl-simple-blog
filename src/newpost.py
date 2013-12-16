@@ -4,10 +4,11 @@ from google.appengine.api import users
 
 import webapp2
 
-from shared.Post import Post
-from shared.Tag import Tag
-from shared.User import User
-from shared.Blog import Blog
+from shared.Data import Post
+from shared.Data import Tag
+from shared.Data import User
+from shared.Data import Blog
+
 import jinja2
 import os
 
