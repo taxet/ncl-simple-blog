@@ -15,40 +15,15 @@
 			<div id="main">
 				<div id="content" class="column">
 					<div id="posts">
-						<h2 class="posttitle"><a href="{{post.getUrl(wanted_user.blogname)}}">{{post.title}}</a></h2>
-						<p class="postauthor">author:
-						{% for author in post.get_authors() %}
-							<a href="{{author.get_blog_url()}}">{{ author.nickname }}</a>
-						{% endfor %}
-						</p>
-						<p class="postdate">created on {{ post.createdDate }}
-						{% if post.lastEditDate %}
-						last edited on {{ post.laseEditDate }}
-						{% endif %}
-						</p>
-						<div class="tags">
-							{% for tag in post.get_tags() %}
-							<a href="{{tag.get_url()}}">{{tag.name}}</a> 
-							{% endfor %}
-						</div>
-						<div class="postcontent">{{post.parse_content()}}</div>
-						<div class="comments"><b>{{post.views}}</b> views <a href="{{post.get_up_url()}}" class="thumbup">up</a>({{post.thumbUp}})/<a href="{{post.get_down_url()}}" class="thumbdown">down</a>({{post.thumbDown}})</div>
-						{% if user and user.email() in post.authors %}
-						<div class="editbutton">
-							<form action="/edit" method=POST>
-								<input type="hidden" name="post_id" value="{{post.post_id}}">
-								<input type="submit" value="edit">
-							</form>
-						</div>
-						{% endif %}
-						<div class="share">share</div>
+					{% for i in range(0,image_no) %}
+					<a href="{{wanted_user.get_image_url(i)}}"><img src="{{wanted_user.get_image_url(i)}}"></img></a><br/>
+					{% endfor %}
 					</div>
 					{% if user %}
 					<div id="newpost">
-						<h2>Comment</h2>
-						<form id="newpostform" action="/" method=POST>
-							<textarea id="newpostcontent" class="posttext" rows="8" name="post_content"></textarea>
-							<br/><div id="submitblog"><input type="submit" value="post"></div>
+						<form id="uploadImage" action="/uploadimage" method=POST enctype="multipart/form-data">
+						 	<input type="hidden" name="user_email" value="{{user.email()}}">
+							upload image: <input type="file" name="img" accept="image/*"> <div id="uploadimage" class="rightbutton"><input type="submit" value="upload"></div>
 						</form>
 					</div>
 					{% endif %}

@@ -346,6 +346,56 @@ class BlogTagPage(webapp2.RequestHandler):
         else:
             para={'title':"WARNING","warning":"4"}
             self.redirect('/warning?'+urllib.urlencode(para))
+            
+class BlogPicPage(webapp2.RequestHandler):
+    def get(self,blogname):
+        #get user
+        user = users.get_current_user()
+        if user:
+            log_url = users.create_logout_url(self.request.uri)
+            log_text = "Log out"
+            #check if in database
+            userdb_list = User.query(User.email == user.email()).fetch()
+            if userdb_list:
+                userdb=userdb_list[0]
+            else:
+                #add new entry
+                userdb=User(email=user.email(),nickname=user.nickname())
+                userdb.put()
+            if userdb.blogname:
+                pass
+            else:
+                self.redirect("/newblog")
+        else:
+            log_url = users.create_login_url(self.request.uri)
+            log_text = "Login"
+            
+        #get images
+        #wanted blog
+        wanted_user=[]
+        if User.query(User.blogname==blogname).fetch():
+            wanted_user=User.query(User.blogname==blogname).fetch()[0]
+            tags=Tag.query().order(-Tag.posts_num).fetch()
+            for tag in tags:
+                flag=False
+                for tag_post in tag.posts:
+                    p=Post.query(Post.post_id==tag_post).fetch()[0]
+                    if wanted_user.email in p.authors:
+                        flag=True
+                if not flag:
+                    tags.remove(tag)
+            template_values={"image_no":len(wanted_user.images),
+                             "log_url":log_url,
+                             "log_text":log_text,
+                             "user":user,
+                             "wanted_user":wanted_user,
+                             "tags":tags,
+                             "userdb":userdb}
+            template = JINJA_ENVIRONMENT.get_template('image.html')
+            self.response.write(template.render(template_values))
+        else:
+            para={'title':"WARNING","warning":"4"}
+            self.redirect('/warning?'+urllib.urlencode(para))
 
 
 class WarningPage(webapp2.RequestHandler):
@@ -355,7 +405,9 @@ class WarningPage(webapp2.RequestHandler):
                       "You have a new blog now.",
                       "Target post does not exist. or belongs to another blog.",
                       "Target blog does not exist.",
-                      "Permission denied."
+                      "Permission denied.",
+                      "Uploading image succeed.",
+                      "Target image does not exist.",
                       ""]
         warning_title=self.request.get("title")
         warning=WARNING_LIST[int(self.request.get("warning"))]
@@ -380,3 +432,18 @@ class NewBlogPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 
+class PicPage(webapp2.RequestHandler):
+    def get(self,blogname,pic_no):
+        wanted_user=[]
+        if User.query(User.blogname==blogname).fetch():
+            wanted_user=User.query(User.blogname==blogname).fetch()[0]
+            img_no=int(pic_no)
+            if img_no<len(wanted_user.images):
+                self.response.headers['Content-Type'] = 'image/png'
+                self.response.out.write(wanted_user.images[img_no])
+            else:
+                para={'title':"WARNING","warning":"7"}
+                self.redirect('/warning?'+urllib.urlencode(para))
+        else:
+            para={'title':"WARNING","warning":"4"}
+            self.redirect('/warning?'+urllib.urlencode(para))

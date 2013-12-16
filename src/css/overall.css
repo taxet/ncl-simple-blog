@@ -130,6 +130,14 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, 
 	text-align:right;
 	margin-right:5px;
 }
+.rightbutton{
+	text-align:right;
+	margin-right:5px;	
+}
+#newpost #uploadImage{
+	margin-left:5px;
+	width:100%;
+}
 
 #content #pages{
 	margin:5px 0px 0px 0px;

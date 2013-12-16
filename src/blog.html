@@ -34,7 +34,7 @@
 							</p>
 							<div class="tags">
 								{% for tag in posts[i].get_tags() %}
-								<a href="{{tag.get_url()}}">{{tag.name}}</a> 
+								<a href="/blog/{{wanted_user.blogname}}/tag/{{tag.name}}">{{tag.name}}</a> 
 								{% endfor %}
 							</div>
 							<div class="postcontent">{{posts[i].cap500()}}</div>
@@ -67,6 +67,10 @@
 							<input type="hidden" name="post_author" value="{{user.email()}}">
 							<br/><div id="submitblog"><input type="submit" value="post"></div>
 						</form>
+						<form id="uploadImage" action="/uploadimage" method=POST enctype="multipart/form-data">
+						 	<input type="hidden" name="user_email" value="{{user.email()}}">
+							upload image: <input type="file" name="img" accept="image/*"> <div id="uploadimage" class="rightbutton"><input type="submit" value="upload"></div>
+						</form>
 					</div>
 					{% else %}
 					{% endif %}
@@ -78,6 +82,7 @@
 						{% if user %}
 							<div id="username">hello! {{user.nickname()}}</div>
 							<div id="myblock"><a href="{{userdb.get_blog_url()}}">My Blog</a></div>
+							<div id="mypic"><a href="{{userdb.get_blog_url()}}/pic">My pictures</a></div>
 						{% else %}
 							<div id="username">hello! Please login.</div>
 						{% endif %}

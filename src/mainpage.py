@@ -13,6 +13,7 @@ from newpost import NewPost
 from newpost import NewBlog
 from newpost import EditPost
 from newpost import EditSubmit
+from newpost import UploadImage
 from page import PostPage
 from page import UpPost
 from page import DownPost
@@ -21,6 +22,8 @@ from page import BlogPage
 from page import WarningPage
 from page import NewBlogPage
 from page import BlogTagPage
+from page import BlogPicPage
+from page import PicPage
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
                                        extensions=['jinja2.ext.autoescape'],
@@ -121,6 +124,9 @@ application = webapp2.WSGIApplication([('/',MainPage),
                                        (r'/tag/([^/]*)',TagPage),
                                        (r'/blog/([^/]*)',BlogPage),
                                        (r'/blog/([^/]*)/tag/([^/]*)',BlogTagPage),
+                                       (r'/blog/([^/]*)/pic',BlogPicPage),
+                                       (r'/blog/([^/]*)/pic/([0-9]*).png',PicPage),
+                                       ('/uploadimage',UploadImage),
                                        ('/up',UpPost),
                                        ('/down',DownPost),
                                        ('/edit',EditPost),

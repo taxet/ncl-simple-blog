@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+	<head>
+		<title>Simple Blog</title>
+		<meta name="description" content="A simle blog" />
+	<!-- css -->
+	<link  rel="stylesheet" type="text/css" href="/css/overall.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1><a href="/">Simple Blog</a></h1>
+			</div>
+			<div id="main">
+				<h1 id="warningtitle">{{warning_title}}</h1>
+				<div id="warning">{{warning}}</div>
+			</div>
+			<div id="footer">
+				<p>Design by <a href="mailto:nichaolun0305@gmail.com">Chaolun Ni</a>.</p>
+			</div>
+		</div>
+	</body>
+</html>
+{% endautoescape %}
