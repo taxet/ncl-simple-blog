@@ -61,6 +61,7 @@ class TagPage(webapp2.RequestHandler):
     def get(self, tag_name):
         #get user
         user = users.get_current_user()
+        userdb=[]
         if user:
             log_url = users.create_logout_url(self.request.uri)
             log_text = "Log out"
@@ -118,6 +119,7 @@ class PostPage(webapp2.RequestHandler):
     def get(self,blogname, keystr):
         #get user
         user = users.get_current_user()
+        userdb=[]
         if user:
             log_url = users.create_logout_url(self.request.uri)
             log_text = "Log out"
@@ -211,6 +213,7 @@ class BlogPage(webapp2.RequestHandler):
     def get(self, blogname):
         #get user
         user = users.get_current_user()
+        userdb=[]
         if user:
             log_url = users.create_logout_url(self.request.uri)
             log_text = "Log out"
@@ -280,6 +283,7 @@ class BlogTagPage(webapp2.RequestHandler):
     def get(self,blogname, tagname):
         #get user
         user = users.get_current_user()
+        userdb=[]
         if user:
             log_url = users.create_logout_url(self.request.uri)
             log_text = "Log out"
