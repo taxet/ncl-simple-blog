@@ -93,14 +93,15 @@ class TagPage(webapp2.RequestHandler):
                 page.set_curr_page(1)
             if page>all_page:
                 page=all_page
-            posts = posts_list[10*(page.curr_page-1):10*page.curr_page-1]
+            posts = posts_list[10*(page.curr_page-1):10*page.curr_page]
         else:
             page=Page()
             page.all_page=1
             page.set_curr_page(1)
             posts=[]
         tags=Tag.query().order(-Tag.posts_num).fetch()
-            
+           
+        host=self.request.host_url 
         template_values={"posts":posts,
                          "posts_no":len(posts),
                          "page":page,
@@ -108,8 +109,9 @@ class TagPage(webapp2.RequestHandler):
                          "log_text":log_text,
                          "user":user,
                          "userdb":userdb,
-                         "tags":tags}
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+                         "tags":tags,
+                         "host":host}
+        template = JINJA_ENVIRONMENT.get_template('template/index.html')
         self.response.write(template.render(template_values))
         
 class PostPage(webapp2.RequestHandler):
@@ -153,14 +155,16 @@ class PostPage(webapp2.RequestHandler):
                     if flag:
                         tags.append(tag)
                 if post.post_id in wanted_blog.posts:
+                    host=self.request.host_url
                     template_values={"post":post,
                                      "log_url":log_url,
                                      "log_text":log_text,
                                      "user":user,
                                      "wanted_blog":wanted_blog,
                                      "tags":tags,
-                                     "userdb":userdb}
-                    template = JINJA_ENVIRONMENT.get_template('post.html')
+                                     "userdb":userdb,
+                                     "host":host}
+                    template = JINJA_ENVIRONMENT.get_template('template/post.html')
                     self.response.write(template.render(template_values))
                 else:
                     para={'title':"WARNING","warning":"3"}
@@ -239,7 +243,7 @@ class BlogPage(webapp2.RequestHandler):
                     page.set_curr_page(1)
                 if page>all_page:
                     page=all_page
-                posts = posts_list[10*(page.curr_page-1):10*page.curr_page-1]
+                posts = posts_list[10*(page.curr_page-1):10*page.curr_page]
             else:
                 page=Page()
                 page.all_page=1
@@ -255,6 +259,8 @@ class BlogPage(webapp2.RequestHandler):
                         flag=True
                 if flag:
                     tags.append(tag)
+            
+            host=self.request.host_url
             template_values={"posts":posts,
                              "posts_no":len(posts),
                              "page":page,
@@ -263,8 +269,9 @@ class BlogPage(webapp2.RequestHandler):
                              "user":user,
                              "userdb":userdb,
                              "wanted_blog":wanted_blog,
-                             "tags":tags}
-            template = JINJA_ENVIRONMENT.get_template('blog.html')
+                             "tags":tags,
+                             "host":host}
+            template = JINJA_ENVIRONMENT.get_template('template/blog.html')
             self.response.write(template.render(template_values))
         else:
             para={'title':"WARNING","warning":"4"}
@@ -308,7 +315,7 @@ class BlogTagPage(webapp2.RequestHandler):
                         page.set_curr_page(1)
                     if page>all_page:
                         page=all_page
-                    posts = posts_list[10*(page.curr_page-1):10*page.curr_page-1]
+                    posts = posts_list[10*(page.curr_page-1):10*page.curr_page]
                 else:
                     page=Page()
                     page.all_page=1
@@ -324,6 +331,8 @@ class BlogTagPage(webapp2.RequestHandler):
                         flag=True
                 if not flag:
                     tags.append(tag)
+        
+            host=self.request.host_url    
             template_values={"posts":posts,
                              "posts_no":len(posts),
                              "page":page,
@@ -332,8 +341,9 @@ class BlogTagPage(webapp2.RequestHandler):
                              "user":user,
                              "userdb":userdb,
                              "wanted_blog":wanted_blog,
-                             "tags":tags}
-            template = JINJA_ENVIRONMENT.get_template('blog.html')
+                             "tags":tags,
+                             "host":host}
+            template = JINJA_ENVIRONMENT.get_template('template/blog.html')
             self.response.write(template.render(template_values))
         else:
             para={'title':"WARNING","warning":"4"}
@@ -363,13 +373,27 @@ class BlogPicPage(webapp2.RequestHandler):
         wanted_user=[]
         if User.query(User.email==user_email).fetch():
             wanted_user=User.query(User.email==user_email).fetch()[0]
-            template_values={"image_no":len(wanted_user.images),
+            all_images = wanted_user.images
+            page=Page()
+            all_page=(len(all_images)-1)/10+1
+            page.all_page=all_page
+            try:
+                page.set_curr_page(int(self.request.get("page")))
+            except (TypeError, ValueError, AttributeError):
+                page.set_curr_page(1)
+            if page>all_page:
+                page=all_page
+            image_no = [10*(page.curr_page-1),10*page.curr_page]
+            if len(all_images)<10*page.curr_page:
+                image_no[1]=len(all_images)
+            template_values={"image_no":image_no,
                              "log_url":log_url,
                              "log_text":log_text,
                              "user":user,
                              "wanted_user":wanted_user,
+                             "page":page,
                              "userdb":userdb}
-            template = JINJA_ENVIRONMENT.get_template('image.html')
+            template = JINJA_ENVIRONMENT.get_template('template/image.html')
             self.response.write(template.render(template_values))
         else:
             para={'title':"WARNING","warning":"4"}
@@ -392,7 +416,7 @@ class WarningPage(webapp2.RequestHandler):
         
         template_values={"warning_title":warning_title,
                          "warning":warning}
-        template = JINJA_ENVIRONMENT.get_template('warning.html')
+        template = JINJA_ENVIRONMENT.get_template('template/warning.html')
         self.response.write(template.render(template_values))
 
 
@@ -419,7 +443,7 @@ class NewBlogPage(webapp2.RequestHandler):
                 warning=""
             template_values={"warning":warning,
                              "userdb":userdb}
-            template = JINJA_ENVIRONMENT.get_template('newblog.html')
+            template = JINJA_ENVIRONMENT.get_template('template/newblog.html')
             self.response.write(template.render(template_values))
         else:
             para={'title':"WARNING","warning":"0"}
@@ -449,6 +473,6 @@ class RssPage(webapp2.RequestHandler):
             blog=Blog.query(Blog.name==blogname).fetch()[0]
         
             template_values={"blog":blog}
-            template = JINJA_ENVIRONMENT.get_template('template.rss')
+            template = JINJA_ENVIRONMENT.get_template('template/template.rss')
             self.response.headers['Content-Type'] = 'application/rss+xml'
             self.response.write(template.render(template_values))

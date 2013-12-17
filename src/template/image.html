@@ -15,10 +15,11 @@
 			<div id="main">
 				<div id="content" class="column">
 					<div id="posts">
-					{% for i in range(0,image_no) %}
+					{% for i in range(image_no[0],image_no[1]) %}
 					<a href="{{wanted_user.get_image_url(i)}}"><img src="{{wanted_user.get_image_url(i)}}"></img></a><br/>
 					{% endfor %}
 					</div>
+					<div id="pages">{{page.get_html()|safe}}</div>
 					{% if user %}
 					<div id="newpost">
 						<form id="uploadImage" action="/uploadimage" method=POST enctype="multipart/form-data">

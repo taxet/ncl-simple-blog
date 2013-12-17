@@ -2,12 +2,13 @@
 {% autoescape true %}
 <html>
 	<head>
-		<title>{{wanted_blog.name}}</title>
+		<title>{{post.title}}</title>
 		<meta name="description" content="A simle blog" />
 	<!-- css -->
 	<link  rel="stylesheet" type="text/css" href="/css/overall.css" />
 	</head>
 	<body>
+	<div id="fb-root"></div>
 		<div id="wrapper">
 			<div id="header">
 				<h1><a href="{{wanted_blog.get_blog_url()}}">{{wanted_blog.name}}</a></h1>
@@ -41,7 +42,20 @@
 							</form>
 						</div>
 						{% endif %}
-						<div class="share">share</div>
+						<div class="share">
+						<div class="fb-share-button" data-href="{{host}}{{post.get_url()}}" data-type="button_count"></div>
+						<script>(function(d, s, id) {
+  									var js, fjs = d.getElementsByTagName(s)[0];
+  									if (d.getElementById(id)) return;
+  									js = d.createElement(s); js.id = id;
+  									js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=513150252125419";
+  									fjs.parentNode.insertBefore(js, fjs);
+  									}(document, 'script', 'facebook-jssdk'));</script>
+  						<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{host}}{{post.get_url()}}">Tweet</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+						<script src="https://apis.google.com/js/plusone.js"></script>
+						<g:plus action="share"></g:plus>
+						</div>
 					</div>
 					{% if user %}
 					<div id="newpost">

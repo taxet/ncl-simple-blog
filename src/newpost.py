@@ -102,7 +102,7 @@ class EditPost(webapp2.RequestHandler):
                                                            autoescape=True)
                     template_values={"post":post,
                                      "user":user}
-                    template = JINJA_ENVIRONMENT.get_template('edit.html')
+                    template = JINJA_ENVIRONMENT.get_template('template/edit.html')
                     self.response.write(template.render(template_values))
                 else:
                     para={'title':"WARNING","warning":"5"}

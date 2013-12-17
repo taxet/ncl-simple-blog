@@ -101,8 +101,10 @@ class MainPage(webapp2.RequestHandler):
             page.set_curr_page(int(self.request.get("page")))
         except (TypeError, ValueError, AttributeError):
             page.set_curr_page(1)
-        posts = posts_list[10*(page.curr_page-1):10*page.curr_page-1]
+        posts = posts_list[10*(page.curr_page-1):10*page.curr_page]
         tags=Tag.query().order(-Tag.posts_num).fetch()
+        
+        host=self.request.host_url
         template_values={"posts":posts,
                          "posts_no":len(posts),
                          "page":page,
@@ -110,8 +112,9 @@ class MainPage(webapp2.RequestHandler):
                          "log_text":log_text,
                          "user":user,
                          "userdb":userdb,
-                         "tags":tags}
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+                         "tags":tags,
+                         "host":host}
+        template = JINJA_ENVIRONMENT.get_template('template/index.html')
         self.response.write(template.render(template_values))
         
 application = webapp2.WSGIApplication([('/',MainPage),

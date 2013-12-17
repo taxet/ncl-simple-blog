@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% autoescape true %}
+<rss version="2.0">
+<channel>
+ <title>{{blog.name}}</title>
+ <link>{{blog.get_blog_url()}}</link>
+ 
+ {% for post in blog.get_all_posts() %}
+ <item>
+  <title>{{post.title}}</title>
+  <description>{{post.content}}</description>
+  <link>{{post.get_url()|safe}}</link>
+  <guid>{{post.post_id}}</guid>
+  <pubDate>{{post.createdDate}}</pubDate>
+ </item>
+ {% endfor %}
+</channel>
+</rss>
+{% endautoescape %}
